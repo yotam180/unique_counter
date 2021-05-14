@@ -29,5 +29,11 @@
     <ClInclude Include="ComparisonCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OriginalAlgorithmUniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

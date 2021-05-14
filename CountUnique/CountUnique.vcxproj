@@ -145,6 +145,8 @@
   <ItemGroup>
     <ClInclude Include="ComparisonCounted.h" />
     <ClInclude Include="ComparisonCounter.h" />
+    <ClInclude Include="OriginalAlgorithmUniqueCounter.h" />
+    <ClInclude Include="UniqueCounter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
