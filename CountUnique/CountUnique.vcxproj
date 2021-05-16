@@ -116,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,12 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ComparisonCounter.cpp" />
+    <ClCompile Include="MetricsCounter.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComparisonCounted.h" />
-    <ClInclude Include="ComparisonCounter.h" />
+    <ClInclude Include="HeapsortUniqueCounter.h" />
+    <ClInclude Include="MeteredTypes.h" />
+    <ClInclude Include="MetricsCounter.h" />
     <ClInclude Include="InsertionSortUniqueCounter.h" />
     <ClInclude Include="OriginalAlgorithmUniqueCounter.h" />
     <ClInclude Include="QuicksortUniqueCounter.h" />

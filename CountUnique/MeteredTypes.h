@@ -62,6 +62,11 @@ public:
 		return *this;
 	}
 
+	operator T&()
+	{
+		return value;
+	}
+
 private:
 	T value;
 };

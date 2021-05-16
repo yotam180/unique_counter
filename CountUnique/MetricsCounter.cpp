@@ -3,6 +3,7 @@
 #include "MetricsCounter.h"
 
 size_t MetricsCounter::comparison_count = 0;
+size_t MetricsCounter::placement_count = 0;
 
 void MetricsCounter::add_comparison()
 {

@@ -18,15 +18,15 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComparisonCounter.cpp">
+    <ClCompile Include="MetricsCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ComparisonCounted.h">
+    <ClInclude Include="MeteredTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComparisonCounter.h">
+    <ClInclude Include="MetricsCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UniqueCounter.h">
@@ -39,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuicksortUniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HeapsortUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

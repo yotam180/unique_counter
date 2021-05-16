@@ -4,6 +4,10 @@
 
 #include "UniqueCounter.h"
 
+/*
+We do not treat quicksort as an optimal comparison-based sort, but as it usually performs very well
+we are also interested in examining its performance.
+*/
 template <class T>
 class QuicksortUniqueCounter final
 	: public UniqueCounter<T>
