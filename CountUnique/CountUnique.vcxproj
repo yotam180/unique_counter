@@ -144,6 +144,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CountingSortUniqueCounter.h" />
     <ClInclude Include="HeapsortUniqueCounter.h" />
     <ClInclude Include="MeteredTypes.h" />
     <ClInclude Include="MetricsCounter.h" />
