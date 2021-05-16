@@ -35,5 +35,11 @@
     <ClInclude Include="OriginalAlgorithmUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InsertionSortUniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuicksortUniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

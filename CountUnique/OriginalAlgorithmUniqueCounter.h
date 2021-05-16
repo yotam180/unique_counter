@@ -13,6 +13,8 @@ public:
 template<class T>
 inline size_t OriginalAlgorithmUniqueCounter<T>::count_unique(std::vector<T>& array)
 {
+	static_assert(std::is_copy_assignable_v<T>, "Type of unique counted array must be copyable");
+
 	size_t u_size = 1;
 	for (size_t i = 1; i < array.size(); ++i)
 	{
