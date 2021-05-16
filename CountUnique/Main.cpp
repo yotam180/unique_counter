@@ -7,6 +7,8 @@
 #include "HeapsortUniqueCounter.h"
 #include "CountingSortUniqueCounter.h"
 
+#include "Hashtable.h" // TODO: Remove
+
 using CCInt = Metered<int>;
 
 int main()

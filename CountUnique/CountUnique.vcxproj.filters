@@ -47,5 +47,8 @@
     <ClInclude Include="CountingSortUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hashtable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
