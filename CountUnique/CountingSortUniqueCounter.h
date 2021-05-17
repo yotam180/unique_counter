@@ -3,7 +3,13 @@
 #include "UniqueCounter.h"
 #include "MeteredTypes.h"
 
-
+/// <summary>
+/// Uses a counting-sort like table, but instead of holding counts, only holds booleans, with the meaning of 
+/// "have we seen this value before?". On every iteration, we check if the element is already in the presence table, and if it's not,
+/// we add it and increment the unique count.
+/// 
+/// Of course, this algorithm is limited since it has to know the valid ranage of values present in the array.
+/// </summary>
 template <class T>
 class CountingSortUniqueCounter final
 	: public UniqueCounter<T>
@@ -48,6 +54,7 @@ inline size_t CountingSortUniqueCounter<T>::count_unique(std::vector<T>& array)
 			unique_count++;
 		}
 	}
+
 	return unique_count;
 }
 
