@@ -6,14 +6,13 @@
 #include "QuicksortUniqueCounter.h"
 #include "HeapsortUniqueCounter.h"
 #include "CountingSortUniqueCounter.h"
-
-#include "Hashtable.h" // TODO: Remove
+#include "HashtableUniqueCounter.h"
 
 using CCInt = Metered<int>;
 
 int main()
 {
-	CountingSortUniqueCounter<CCInt> algorithm(0, 10);
+	HashtableUniqueCounter<CCInt, Metered<int>::hash> algorithm;
 	std::vector<CCInt> array{ 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 };
 
 	auto result = algorithm.count_unique(array);

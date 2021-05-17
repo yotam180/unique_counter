@@ -10,7 +10,7 @@ public:
 
 public:
 	template <class ... Args>
-	Metered(Args ...args) : inner_value(args...)
+	Metered(Args ...args) noexcept : inner_value(args...)
 	{
 		// We count a construction of a metered object as a placement to count the initial array initialization, etc.
 		// Otherwise, algorithms that require dynamic allocations will not be metered correctly
@@ -19,56 +19,56 @@ public:
 	}
 
 public:
-	bool operator==(This other) const
+	bool operator==(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value == other.inner_value;
 	}
 
-	bool operator==(T other) const
+	bool operator==(T other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value == other;
 	}
 
-	bool operator!=(This other) const
+	bool operator!=(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value != other.inner_value;
 	}
 
-	bool operator>=(This other) const
+	bool operator>=(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value >= other.inner_value;
 	}
 
-	bool operator>(This other) const
+	bool operator>(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value > other.inner_value;
 	}
 
-	bool operator<=(This other) const
+	bool operator<=(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value <= other.inner_value;
 	}
 
-	bool operator<(This other) const
+	bool operator<(This other) const noexcept
 	{
 		MetricsCounter::add_comparison();
 		return inner_value < other.inner_value;
 	}
 
-	This& operator=(This other)
+	This& operator=(This other) noexcept
 	{
 		MetricsCounter::add_placement();
 		inner_value = other.inner_value;
 		return *this;
 	}
 
-	T operator++(int)
+	T operator++(int) noexcept
 	{
 		MetricsCounter::add_placement();
 		T temp = inner_value;
@@ -76,14 +76,14 @@ public:
 		return temp;
 	}
 
-	This& operator++()
+	This& operator++() noexcept
 	{
 		MetricsCounter::add_placement();
 		inner_value++;
 		return *this;
 	}
 
-	T operator--(int)
+	T operator--(int) noexcept
 	{
 		MetricsCounter::add_placement();
 		T temp = value;
@@ -91,24 +91,32 @@ public:
 		return temp;
 	}
 
-	This& operator--()
+	This& operator--() noexcept
 	{
 		MetricsCounter::add_placement();
 		inner_value--;
 		return *this;
 	}
 
-	operator const T&() const
+	operator const T&() const noexcept
 	{
 		return inner_value;
 	}
 	
-	T value()
+	T value() noexcept
 	{
-		static_assert(std::is_trivial_v<T>, "Can only get a copy for trivial types");
 		return inner_value;
 	}
 
 private:
 	T inner_value;
+
+public:
+	struct hash
+	{
+		std::size_t operator()(const Metered<T>& k) const
+		{
+			return std::hash<T>()(k.inner_value);
+		}
+	};
 };

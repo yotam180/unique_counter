@@ -145,7 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CountingSortUniqueCounter.h" />
-    <ClInclude Include="Hashtable.h" />
+    <ClInclude Include="HashtableUniqueCounter.h" />
     <ClInclude Include="HeapsortUniqueCounter.h" />
     <ClInclude Include="MeteredTypes.h" />
     <ClInclude Include="MetricsCounter.h" />

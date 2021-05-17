@@ -9,9 +9,8 @@ class CountingSortUniqueCounter final
 	: public UniqueCounter<T>
 {
 private:
-	// We use m_bool and m_size_t to measure access and update of elements inside the counting-sort C table
+	// We use m_bool to measure access and update of elements inside the counting-sort C table
 	using m_bool = Metered<bool>;
-	using m_size_t = Metered <size_t>;
 
 public:
 	size_t count_unique(std::vector<T>& array) override;
@@ -32,7 +31,7 @@ private:
 template<class T>
 inline size_t CountingSortUniqueCounter<T>::count_unique(std::vector<T>& array)
 {
-	m_size_t unique_count = 0;
+	size_t unique_count = 0;
 	for (auto& el : array)
 	{
 		if (present_table[el.value()] == false) // == false is required so the comparison is counted
