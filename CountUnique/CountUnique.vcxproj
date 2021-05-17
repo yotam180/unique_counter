@@ -145,6 +145,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryTree.h" />
     <ClInclude Include="CountingSortUniqueCounter.h" />
     <ClInclude Include="HashtableUniqueCounter.h" />
     <ClInclude Include="HeapsortUniqueCounter.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="InsertionSortUniqueCounter.h" />
     <ClInclude Include="OriginalAlgorithmUniqueCounter.h" />
     <ClInclude Include="OptimalSortUniqueCounter.h" />
+    <ClInclude Include="RedBlackTreeUniqueCounter.h" />
     <ClInclude Include="UniqueCounter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -50,5 +50,11 @@
     <ClInclude Include="HashtableUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RedBlackTreeUniqueCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

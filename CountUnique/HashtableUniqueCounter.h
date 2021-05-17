@@ -47,7 +47,7 @@ inline size_t HashtableUniqueCounter<T, Hasher>::count_unique(std::vector<T>& ar
 	{
 		if (counted_values.find(i) == counted_values.end())
 		{
-			counted_values.insert(T(i));
+			PLACE counted_values.insert(T(i));
 			unique_count++;
 		}
 	}

@@ -5,6 +5,7 @@
 #include "HeapsortUniqueCounter.h"
 #include "CountingSortUniqueCounter.h"
 #include "HashtableUniqueCounter.h"
+#include "RedBlackTreeUniqueCounter.h"
 
 #include <iostream>
 #include <memory>
@@ -25,6 +26,7 @@ static auto create_algorithms_vector()
 	algorithms.emplace("4 Optimal sort", new OptimalSortUniqueCounter<m_int>());
 	algorithms.emplace("5 Counting table", new CountingSortUniqueCounter<m_int>(MINIMUM_VALUE, MAXIMUM_VALUE + 1));
 	algorithms.emplace("6 Hash table", new HashtableUniqueCounter<m_int>());
+	algorithms.emplace("8 Red-Black tree", new RedBlackTreeUniqueCounter<m_int>());
 	return algorithms;
 }
 
@@ -68,17 +70,29 @@ static std::vector<m_int> generate_array(size_t length)
 	return vec;
 }
 
-int main()
+int real_main()
 {
 	const auto algorithms = create_algorithms_vector();
 	const auto array_length = prompt_array_length();
 	const auto array = generate_array(array_length);
 	
-	for (const auto& algorithm : algorithms)
+	for (const auto& [algorithm_name, algorithm] : algorithms)
 	{
-		std::cout << "Running with " << algorithm.first << "\n\t";
-		run_algorithm(algorithm.second, array);
+		std::cout << "Running with " << algorithm_name << "\n\t";
+		run_algorithm(algorithm, array);
 	}
 
 	return 0;
+}
+
+#include "BinaryTree.h"
+int main()
+{
+	BinaryTree<int> t;
+	t.insert(10);
+	t.insert(5);
+	t.insert(30);
+	t.insert(7);
+
+	std::cout << t.search(5) << " " << t.search(11) << std::endl;
 }
