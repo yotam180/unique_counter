@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <memory>
+#include <map>
+#include <string>
 #include <random>
 
 using m_int = Metered<int>;
@@ -16,13 +18,13 @@ constexpr auto MINIMUM_VALUE = 0, MAXIMUM_VALUE = 100;
 
 static auto create_algorithms_vector()
 {
-	std::vector<std::unique_ptr<UniqueCounter<m_int>>> algorithms;
-	algorithms.emplace_back(new OriginalAlgorithmUniqueCounter<m_int>());
-	algorithms.emplace_back(new InsertionSortUniqueCounter<m_int>());
-	algorithms.emplace_back(new HeapsortUniqueCounter<m_int>());
-	algorithms.emplace_back(new OptimalSortUniqueCounter<m_int>());
-	algorithms.emplace_back(new CountingSortUniqueCounter<m_int>(MINIMUM_VALUE, MAXIMUM_VALUE + 1));
-	algorithms.emplace_back(new HashtableUniqueCounter<m_int>());
+	std::map<std::string, std::unique_ptr<UniqueCounter<m_int>>> algorithms;
+	algorithms.emplace("1 Original algorithm", new OriginalAlgorithmUniqueCounter<m_int>());
+	algorithms.emplace("2 Insertion sort", new InsertionSortUniqueCounter<m_int>());
+	algorithms.emplace("3 Heap sort", new HeapsortUniqueCounter<m_int>());
+	algorithms.emplace("4 Optimal sort", new OptimalSortUniqueCounter<m_int>());
+	algorithms.emplace("5 Counting table", new CountingSortUniqueCounter<m_int>(MINIMUM_VALUE, MAXIMUM_VALUE + 1));
+	algorithms.emplace("6 Hash table", new HashtableUniqueCounter<m_int>());
 	return algorithms;
 }
 
@@ -74,7 +76,8 @@ int main()
 	
 	for (const auto& algorithm : algorithms)
 	{
-		run_algorithm(algorithm, array);
+		std::cout << "Running with " << algorithm.first << "\n\t";
+		run_algorithm(algorithm.second, array);
 	}
 
 	return 0;
