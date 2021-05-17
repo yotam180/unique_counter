@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryTree.h" />
+    <ClInclude Include="BinaryTreeUniqueCounter.h" />
     <ClInclude Include="CountingSortUniqueCounter.h" />
     <ClInclude Include="HashtableUniqueCounter.h" />
     <ClInclude Include="HeapsortUniqueCounter.h" />
