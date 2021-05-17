@@ -12,7 +12,7 @@ using CCInt = Metered<int>;
 
 int main()
 {
-	HashtableUniqueCounter<CCInt> algorithm;
+	OriginalAlgorithmUniqueCounter<CCInt> algorithm;
 	std::vector<CCInt> array{ 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 };
 
 	auto result = algorithm.count_unique(array);

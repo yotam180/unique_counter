@@ -13,26 +13,16 @@ public:
 template<class T>
 inline size_t OriginalAlgorithmUniqueCounter<T>::count_unique(std::vector<T>& array)
 {
-	static_assert(std::is_copy_assignable_v<T>, "Type of unique counted array must be copyable");
+	auto unique_end = array.begin();
 
-	size_t u_size = 1;
-	for (size_t i = 1; i < array.size(); ++i)
+	for (auto it = array.begin(); it != array.end(); ++it)
 	{
-		bool u = true;
-		for (size_t j = 0; j < u_size; ++j)
+		if (std::find(array.begin(), unique_end, *it) == unique_end)
 		{
-			if (array[j] == array[i])
-			{
-				u = false;
-			}
-		}
-
-		if (u)
-		{
-			u_size++;
-			array[u_size] = array[i];
+			*unique_end = *it;
+			unique_end++;
 		}
 	}
 
-	return u_size;
+	return std::distance(array.begin(), unique_end);
 }
