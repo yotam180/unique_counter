@@ -1,5 +1,8 @@
 #pragma once
 
+#define COMP MetricsCounter::add_comparison();
+#define PLACE MetricsCounter::add_placement();
+
 /// <summary>
 /// MetricsCounter meters performance of code in terms of placements (includes copies), value comparisons and
 /// fixed calculations (such as hash computation)

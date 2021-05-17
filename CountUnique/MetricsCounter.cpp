@@ -57,3 +57,4 @@ size_t MetricsCounter::get_fixed_calculation_count() noexcept
 {
 	return fixed_calculation_count;
 }
+\

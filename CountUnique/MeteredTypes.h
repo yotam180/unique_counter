@@ -2,6 +2,14 @@
 
 #include "MetricsCounter.h"
 
+/// <summary>
+/// Metered<T> is a wrapper around T, which counts comparisons and placements of T objects.
+/// A consumer of this class should use MetricsCounter::get_xxx_count() to get the comparison/placement
+/// counter for these types.
+/// 
+/// All objects of all metered types add to the same comparison counter. There is no per-object or per-type counters
+/// to preserve simplicity.
+/// </summary>
 template <class T>
 class Metered final
 {
@@ -9,68 +17,48 @@ public:
 	using This = Metered<T>;
 
 public:
+
+	/// <summary>
+	/// This constructor is here to allow arbitrary object construction in a transparent way (not explicitly going through Metered<int> ctor).
+	/// It enables us to do the following:
+	/// 
+	///		Metered<int> x = 5;
+	/// 
+	/// Instead of:
+	/// 
+	///		Metered<int> x{{5}};
+	/// </summary>
 	template <class ... Args>
-	Metered(Args ...args) noexcept : inner_value(args...)
+	Metered(Args ...args) noexcept :
+		inner_value(args...)
 	{
-		// We count a construction of a metered object as a placement to count the initial array initialization, etc.
-		// Otherwise, algorithms that require dynamic allocations will not be metered correctly
-		// (since the new allocations would appear as 0 placements)
-		MetricsCounter::add_placement();
+		// We count a construction of a metered object as a placement in order to count the initial array initialization.
+		// Otherwise, algorithms that require dynamic allocations will not be metered correctly (since the new allocations
+		// would not be counted)
+		PLACE
 	}
 
 public:
-	bool operator==(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value == other.inner_value;
-	}
+	// The following functions just wrap the native comparison check operators, and log the comparison
+	bool operator==(T other) const noexcept { COMP return inner_value == other; }
+	bool operator==(This other) const noexcept { COMP return inner_value == other.inner_value; }
+	bool operator!=(This other) const noexcept { COMP return inner_value != other.inner_value; }
+	bool operator>=(This other) const noexcept { COMP return inner_value >= other.inner_value; }
+	bool operator>(This other) { COMP return inner_value > other.inner_value; }
+	bool operator<=(This other) { COMP return inner_value <= other.inner_value; }
+	bool operator<(This other) { COMP return inner_value < other.inner_value; }
 
-	bool operator==(T other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value == other;
-	}
-
-	bool operator!=(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value != other.inner_value;
-	}
-
-	bool operator>=(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value >= other.inner_value;
-	}
-
-	bool operator>(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value > other.inner_value;
-	}
-
-	bool operator<=(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value <= other.inner_value;
-	}
-
-	bool operator<(This other) const noexcept
-	{
-		MetricsCounter::add_comparison();
-		return inner_value < other.inner_value;
-	}
-
+	// The following functions wrap the native placement, increment, decrement operators and log a placement
 	This& operator=(This other) noexcept
 	{
-		MetricsCounter::add_placement();
+		PLACE
 		inner_value = other.inner_value;
 		return *this;
 	}
 
 	T operator++(int) noexcept
 	{
-		MetricsCounter::add_placement();
+		PLACE
 		T temp = inner_value;
 		inner_value++;
 		return temp;
@@ -78,14 +66,14 @@ public:
 
 	This& operator++() noexcept
 	{
-		MetricsCounter::add_placement();
+		PLACE
 		inner_value++;
 		return *this;
 	}
 
 	T operator--(int) noexcept
 	{
-		MetricsCounter::add_placement();
+		PLACE
 		T temp = value;
 		inner_value--;
 		return temp;
@@ -93,12 +81,13 @@ public:
 
 	This& operator--() noexcept
 	{
-		MetricsCounter::add_placement();
+		PLACE
 		inner_value--;
 		return *this;
 	}
 
-	operator const T&() const noexcept
+	// Implicit and explicit conversions to the underlying type
+	operator const T&() const noexcept 
 	{
 		return inner_value;
 	}
@@ -111,12 +100,18 @@ public:
 private:
 	T inner_value;
 
-public:
-	struct hash
+private:
+	friend struct std::hash<This>;
+};
+
+namespace std
+{
+	template <class T>
+	struct hash<Metered<T>>
 	{
 		size_t operator()(const Metered<T>& k) const
 		{
 			return std::hash<T>()(k.inner_value);
 		}
 	};
-};
+}
