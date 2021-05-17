@@ -2,6 +2,8 @@
 
 #include "MetricsCounter.h"
 
+#include <functional>
+
 /// <summary>
 /// Metered<T> is a wrapper around T, which counts comparisons and placements of T objects.
 /// A consumer of this class should use MetricsCounter::get_xxx_count() to get the comparison/placement

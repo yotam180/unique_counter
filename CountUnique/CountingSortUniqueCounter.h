@@ -20,25 +20,58 @@ public:
 	explicit CountingSortUniqueCounter(size_t min_value, size_t max_value) :
 		min_value(min_value), 
 		max_value(max_value),
-		present_table(max_value - min_value, false) {}
+		presence_table{} {}
+
+private:
+	void clear_presence_table();
+	bool present_in_table(const T& key);
+	void add_to_table(const T& key);
+	size_t get_presence_table_index(const T& key);
 
 private:
 	size_t min_value;
 	size_t max_value;
-	std::vector<m_bool> present_table;
+	std::vector<m_bool> presence_table;
 };
 
 template<class T>
 inline size_t CountingSortUniqueCounter<T>::count_unique(std::vector<T>& array)
 {
 	size_t unique_count = 0;
+	clear_presence_table();
+
 	for (auto& el : array)
 	{
-		if (present_table[el.value()] == false) // == false is required so the comparison is counted
+		if (!present_in_table(el)) 
 		{
-			present_table[el.value()] = true;
+			add_to_table(el);
 			unique_count++;
 		}
 	}
-	return unique_count.value();
+	return unique_count;
+}
+
+template<class T>
+inline void CountingSortUniqueCounter<T>::clear_presence_table()
+{
+	presence_table.clear();
+	presence_table.resize(max_value - min_value);
+}
+
+template<class T>
+inline bool CountingSortUniqueCounter<T>::present_in_table(const T& key)
+{
+	return presence_table[get_presence_table_index(key)] == true; // == true is required so the comparison is counted
+}
+
+template<class T>
+inline void CountingSortUniqueCounter<T>::add_to_table(const T& key)
+{
+	presence_table[get_presence_table_index(key)] = true;
+}
+
+template<class T>
+inline size_t CountingSortUniqueCounter<T>::get_presence_table_index(const T& key)
+{
+	return static_cast<size_t>(key) - min_value;
 }

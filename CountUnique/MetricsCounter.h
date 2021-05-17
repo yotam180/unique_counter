@@ -2,6 +2,7 @@
 
 #define COMP MetricsCounter::add_comparison();
 #define PLACE MetricsCounter::add_placement();
+#define CALCULATION MetricsCounter::add_fixed_calculation();
 
 /// <summary>
 /// MetricsCounter meters performance of code in terms of placements (includes copies), value comparisons and

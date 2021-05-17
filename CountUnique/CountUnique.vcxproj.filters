@@ -38,7 +38,7 @@
     <ClInclude Include="InsertionSortUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QuicksortUniqueCounter.h">
+    <ClInclude Include="OptimalSortUniqueCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HeapsortUniqueCounter.h">

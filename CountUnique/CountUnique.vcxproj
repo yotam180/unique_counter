@@ -152,7 +152,7 @@
     <ClInclude Include="MetricsCounter.h" />
     <ClInclude Include="InsertionSortUniqueCounter.h" />
     <ClInclude Include="OriginalAlgorithmUniqueCounter.h" />
-    <ClInclude Include="QuicksortUniqueCounter.h" />
+    <ClInclude Include="OptimalSortUniqueCounter.h" />
     <ClInclude Include="UniqueCounter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

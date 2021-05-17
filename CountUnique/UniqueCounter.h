@@ -7,6 +7,9 @@ class UniqueCounter
 {
 public:
 	virtual size_t count_unique(std::vector<T>& array) = 0;
+
+public:
+	virtual ~UniqueCounter() = default;
 };
 
 // TODO: Move to a better place

@@ -3,6 +3,7 @@
 #include <unordered_set>
 
 #include "UniqueCounter.h"
+#include "MeteredTypes.h"
 
 template <class OriginalHash, class T>
 struct logging_hash
@@ -10,8 +11,7 @@ struct logging_hash
 {
 public:
 	size_t operator()(const T& _Keyval) const {
-		std::cout << "Hash function called" << std::endl;
-		return OriginalHash::operator()(_Keyval);
+		CALCULATION return OriginalHash::operator()(_Keyval);
 	}
 };
 
