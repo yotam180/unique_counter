@@ -41,6 +41,9 @@ public:
 		PLACE
 	}
 
+	Metered(const This& other) : inner_value(other.inner_value) { PLACE }
+	Metered(This&& other) : inner_value(other.inner_value) { PLACE }
+
 public:
 	// The following functions just wrap the native comparison check operators, and log the comparison
 	bool operator==(T other) const noexcept { COMP return inner_value == other; }

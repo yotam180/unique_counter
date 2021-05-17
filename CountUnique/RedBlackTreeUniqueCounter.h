@@ -30,7 +30,7 @@ inline size_t RedBlackTreeUniqueCounter<T>::count_unique(std::vector<T>& array)
 	{
 		if (!present_values.contains(i))
 		{
-			PLACE present_values.insert(i);
+			present_values.insert(i);
 			unique_count++;
 		}
 	}
