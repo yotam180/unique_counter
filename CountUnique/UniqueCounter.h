@@ -2,6 +2,9 @@
 
 #include <vector>
 
+/// <summary>
+/// UniqueCounter is a simple base class for all algorithms. It only provides an interface containing a count_unique(...) function.
+/// </summary>
 template <class T>
 class UniqueCounter
 {
@@ -12,7 +15,10 @@ public:
 	virtual ~UniqueCounter() = default;
 };
 
-// TODO: Move to a better place
+/// <summary>
+/// This function assumes the given array is sorted, iterates it once and returns the count of unique elements.
+/// Time complexity is \Theta(n)
+/// </summary>
 template <class T>
 size_t count_unique_in_ordered_array(const std::vector<T>& array)
 {

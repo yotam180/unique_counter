@@ -4,6 +4,10 @@
 
 #include "UniqueCounter.h"
 
+/// <summary>
+/// Uses heapsort to sort the array, then iterates it and finds all unique values.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 template <class T>
 class HeapsortUniqueCounter final
 	: public UniqueCounter<T>
