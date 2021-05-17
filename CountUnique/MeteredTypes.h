@@ -3,6 +3,7 @@
 #include "MetricsCounter.h"
 
 #include <functional>
+#include <iostream> // TODO: Remove
 
 /// <summary>
 /// Metered<T> is a wrapper around T, which counts comparisons and placements of T objects.
@@ -43,15 +44,15 @@ public:
 public:
 	// The following functions just wrap the native comparison check operators, and log the comparison
 	bool operator==(T other) const noexcept { COMP return inner_value == other; }
-	bool operator==(This other) const noexcept { COMP return inner_value == other.inner_value; }
-	bool operator!=(This other) const noexcept { COMP return inner_value != other.inner_value; }
-	bool operator>=(This other) const noexcept { COMP return inner_value >= other.inner_value; }
-	bool operator>(This other) { COMP return inner_value > other.inner_value; }
-	bool operator<=(This other) { COMP return inner_value <= other.inner_value; }
-	bool operator<(This other) { COMP return inner_value < other.inner_value; }
+	bool operator==(const This& other) const noexcept { COMP return inner_value == other.inner_value; }
+	bool operator!=(const This& other) const noexcept { COMP return inner_value != other.inner_value; }
+	bool operator>=(const This& other) const noexcept { COMP return inner_value >= other.inner_value; }
+	bool operator>(const This& other) const noexcept { COMP return inner_value > other.inner_value; }
+	bool operator<=(const This& other) const noexcept { COMP return inner_value <= other.inner_value; }
+	bool operator<(const This& other) const noexcept { COMP return inner_value < other.inner_value; }
 
 	// The following functions wrap the native placement, increment, decrement operators and log a placement
-	This& operator=(This other) noexcept
+	This& operator=(const This& other) noexcept
 	{
 		PLACE
 		inner_value = other.inner_value;
@@ -88,12 +89,14 @@ public:
 		return *this;
 	}
 
-	// Implicit and explicit conversions to the underlying type
-	operator const T&() const noexcept 
+	// Explicit conversions to the underlying type
+	template <class T>
+	explicit operator T() const noexcept
 	{
-		return inner_value;
+		return static_cast<T>(inner_value);
 	}
 	
+	// TODO: Get rid of this
 	T value() noexcept
 	{
 		return inner_value;

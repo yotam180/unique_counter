@@ -25,7 +25,7 @@ size_t count_unique_in_ordered_array(const std::vector<T>& array)
 	size_t unique_count = 0;
 	for (auto it = array.cbegin(); it != array.cend(); ++it)
 	{
-		if (it == array.cbegin() || *it == *std::prev(it))
+		if (it == array.cbegin() || *it != *std::prev(it))
 		{
 			unique_count++;
 		}
