@@ -114,7 +114,7 @@ private:
 public:
 	struct hash
 	{
-		std::size_t operator()(const Metered<T>& k) const
+		size_t operator()(const Metered<T>& k) const
 		{
 			return std::hash<T>()(k.inner_value);
 		}

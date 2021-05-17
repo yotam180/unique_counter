@@ -4,14 +4,14 @@
 
 #include "UniqueCounter.h"
 
-template <class T>
+template <class OriginalHash, class T>
 struct logging_hash
-	: private std::hash<T>
+	: private OriginalHash
 {
 public:
-	static size_t _Do_hash(const T& _Keyval) noexcept {
+	size_t operator()(const T& _Keyval) const {
 		std::cout << "Hash function called" << std::endl;
-		return std::hash<T>::_Hash_representation(_Keyval);
+		return OriginalHash::operator()(_Keyval);
 	}
 };
 
@@ -30,7 +30,7 @@ inline size_t HashtableUniqueCounter<T, Hasher>::count_unique(std::vector<T>& ar
 	// See https://github.com/microsoft/STL/blob/62137922ab168f8e23ec1a95c946821e24bde230/stl/inc/unordered_set
 
 	size_t unique_count = 0;
-	std::unordered_set<T, Hasher> counted_values;
+	std::unordered_set<T, logging_hash<Hasher, T>> counted_values;
 	for (auto& i : array)
 	{
 		if (counted_values.find(i) == counted_values.end())
