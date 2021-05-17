@@ -106,6 +106,10 @@ private:
 
 namespace std
 {
+	/// <summary>
+	/// Used for stl unordered associative containers requiring a hash function. This template specialization
+	/// is provided to make Metered<T> a transparent substitution for T.
+	/// </summary>
 	template <class T>
 	struct hash<Metered<T>>
 	{
