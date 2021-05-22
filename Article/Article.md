@@ -1,10 +1,16 @@
-# Assignment 14 - Yotam Salmon
+---
+title: "Measuring different algorithms for counting unique elements in an array"
+author: Yotam Salmon
+date: May 22, 2021
+geometry: margin=3cm
+output: pdf_document
+---
 
-## Preface
+# Preface
 
 In this project, we will examine the performance of various algorithms for counting unique values in an array.
 
-## Measurements
+# Measurements
 
 We use 3 different metric values to measure the performance of each algorithm:
 
@@ -18,7 +24,7 @@ Of course, the metric values themselves tell us nothing meaningful about compari
 
 However, the measurements from this exercise will show us the asymptotic behaviour of the metrics in different algorithms, and that should help us grasp a strong intuition about which algorithms outperform others in the task.
 
-## Technical
+# Technical
 
 TODO: Explain the method we use to measure the number of comparisons, placements, etc...
 
@@ -30,9 +36,9 @@ TODO: Solve TODOs within code
 
 TODO: Explain problems - values range, spreaing, etc. Take results with limited accountability.
 
-## Algorithms
+# Algorithms
 
-### 1. Original algorithm
+## 1. Original algorithm
 
 **General:** This is the algorithm presented in Maman 12 Question 1(A). The algorithm arranges a subarray at the beginning of the original array, with all the unique values stored in the subarray. For every element in the array, the algorithm iterates the unique subarray to find out if the element has previously been encountered. Has it not been - it is appended to the unique subarray and a counter is incremented.
 
@@ -64,7 +70,7 @@ The following graph really shows the intent. It represents the results of runnin
 
 Note that when the comparisons count really goes quadratic (rather than linear), the placements count (which is linear) is negligible.
 
-### 2. Insertion sort
+## 2. Insertion sort
 
 **General:** Sort the array using insertion sort, then iterate it *once* and find all unique values. Since we know all similar values reside in "groups" (i.e. between similar elements there cannot be another element), when iterating the array, every time an element changes `array[i] != array[i-1]`, we know the new element `array[i]` is a new, unique element (which is not in `array[0...i-1]`). The routine `count_unique_in_ordered_array` counts the unique elements in exactly that manner.
 
@@ -80,7 +86,7 @@ The following graph shows the performance metrics of the insertion sort algorith
 
 <center>(2.1) - Insertion sort metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
 
-### 3. Optimal comparison-based sort
+## 3. Optimal comparison-based sort
 
 **General:** We used `std::sort` as an "optimal" comparison-based sort. The standard guarantees that this sort is optimal in the worst case:
 
@@ -100,7 +106,7 @@ The following graph shows the comparisons and placements growth with array sizes
 
 <center>(3.1) - Optimal sort metrics graph<br/>Blue - comparisons, orange - placements, grey - nlgn, yellow - linear</center><br/>
 
-### 4. Heapsort
+## 4. Heapsort
 
 **General:** in addition to using `std::sort` (for it's known to be blazingly fast), I wanted to see the results of  a known optimal sort. The library functions added in C++20, `std::make_heap` and `std::pop_heap`, made it very simple to implement a heap sort.
 
@@ -114,7 +120,7 @@ After sorting the array, we use `count_unique_in_sorted_array` to count the uniq
 
 We observe more placements than comparisons generally because of the frequent swapping, which counts as 3 placements.
 
-### 5. Counting sort C array
+## 5. Counting sort C array
 
 **General:** Uses a counting-sort like table, but instead of holding counts, only holds booleans, with the meaning of "have we seen this value before?". On every iteration, we check if the element is already in the presence table, and if it's not, we add it and increment the unique count.
 
@@ -140,7 +146,7 @@ However, when $m$ is constant, we have promised that the number of placements is
 
 As expected.
 
-### 6. Hash table
+## 6. Hash table
 
 **General:** We use a hash table to store which values were already counted as unique. On every iteration on the array, we search the value in the heap, and if it is not found, we add it to the heap and increment the unique elements counter.
 
@@ -156,11 +162,57 @@ The following graph visualizes the performance metrics for hash table unique cou
 
 <center>(6.1) - Hash table metrics graph<br/>Blue - comparisons, orange - placements, grey - hash calculations</center><br/>
 
-### 7. Binary Search Tree
+## 7. Binary Search Tree
 
-**General:** 
+TODO: Go through this and make sure everything is correct!!! (placements/comparisons wise, validate all numbers and equations)
 
-## Raw outputs:
+**General:** Similarly to hash table, the algorithm starts with an empty BST, and iterates the array. On every element the algorithm encounters, it searches for it in the tree, and if it is not found, it is added to the tree and a counter is incremented.
+
+**Performance:** In the worst case, when the array is ordered, new leaves will always be added to the right, forming a "tail" shaped tree (where $h=n$), with insertions and searches taking $\Theta(n)$ comparisons ($n$ being the size of the tree). Then, performing $n$ searches and $O(n)$ insertions, the algorithm overall runtime complexity should be $O(n^2)$.
+
+However, a randomly generated input array should result in a randomly constructed BST, whose performance is predicted to be around the average case (and not the worst case). In the average case, we expect the height of the tree to be logarithmic to the tree size - $h=\Theta(\log(n))$. Then, the overall number of comparisons is $\Theta(n\log(n))$. The number of placements is $\Theta(m)$ ($m$ being the maximal size of the tree)
+
+The following graph depicts the metrics for binary search tree:
+
+![](Assets/bst_graph.png)
+
+<center>(7.1) - BST metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+
+The comparisons count does not exactly reflect a "linear" growth, but the yellow dashed line is a linear trendline emphasizing that the comparisons grow linearly.
+
+Similarly to algorithm 1, the limited constant range of possible elements in the array limits the BST size to a constant value, reducing the overall comparisons and placements from $\Theta(n\log(n))$ to $\Theta(n)$. With a larger range to work with, we should be able to observe a graph depicting $\Theta(n\log(n))$
+
+The next graph depicts a crafted worst-case scenario. The given arrays in this case are always sorted, so that the binary tree is always in its worst shape. That corresponds to $\Theta(n^2)$ comparisons and $\Theta(n\log(n))$ placements.
+
+![](Assets/bst_worst_case_graph.png)
+
+<center>(7.2) - BST worst-case metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+
+The next graph corresponds to the average case scenario, run with array sizes $10-10000$ and value range of $[1...1000000]$ (thus, not limiting the tree size to a constant factor). This corresponds to the frequent case where $m=\omega(n)$ (an order of magnitude more values than actual elements).
+
+![](Assets/bst_worst_case_graph.png)
+
+<center>(7.3) - BST average-case metrics graph with $m=\omega(n)$<br/>Blue - comparisons, orange - placements</center><br/>
+
+## 8. Red-Black Tree
+
+**General:** This algorithm is similar to algorithm 7 (Binary Search Tree), but it uses a red-black tree. The algorithm implementation uses `std::set`, since the MSVC STL implementation states that it internally uses a red-black tree.
+
+**Performance**: The height of the tree is guaranteed to be $\Theta(\log(n))$. When the values range is constant, like the previous case (BST), the overall number of comparisons is $\Theta(n)$. When the range is $m=\Omega(n)$, the overall number of comparisons is $\Theta(n\log(n))$.
+
+The major difference between the two algorithms is that the worst-case graph presented in the previous section does not exist here - the red-black tree height cannot be $\Theta(n)$, and the overall number of comparisons in the algorithm will never be $\Theta(n^2)$.
+
+The following graphs depict two runs of the red-black tree algorithm, one with a small, limited range of possible values, and one with a very large range of values.
+
+![](Assets/red_black_graph.png)
+
+<center>(8.1) - Red-Black metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+
+![](Assets/red_black_large_range_graph.png)
+
+<center>(8.1) - Red-Black metrics graph, with value range $[1...1000000]<br/>Blue - comparisons, orange - placements</center><br/>
+
+# Raw outputs:
 
 ```
 N=100
