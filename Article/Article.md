@@ -12,17 +12,17 @@ In this project, we will examine the performance of various algorithms for count
 
 # Measurements
 
-We use 3 different metric values to measure the performance of each algorithm:
+We utilise three different metric values to measure the performance of each algorithm:
 
 1. Number of comparisons conducted
 2. Number of placements/copies
 3. Number of "fixed-size" calculations
 
-We use the third metric when hashtables are involved, since we wish to reflect the cost of hashing integers (which may be significant no less than comparisons and placements).
+We use the third metric if hashtables are involved since we wish to consider the cost of hashing elements (which may be significant to performance no less than comparisons and placements).
 
-Of course, the metric values themselves tell us nothing meaningful about comparing different algorithms for the same input size, since we do not know the relation between the cost of a comparison, a placement and a hash calculation. Moreover, there are valuable metrics not counted in this exercise, such as runtime, number of dynamic allocations, memory requirements, etc.
+Of course, the metric values themselves tell us nothing meaningful about comparing different algorithms for the same input size since we do not know the relation between the cost of comparison, placement and hash calculation. Moreover, there are valuable metrics not included in this study, such as runtime, number of dynamic allocations, or overall memory requirements.
 
-However, the measurements from this exercise will show us the asymptotic behaviour of the metrics in different algorithms, and that should help us grasp a strong intuition about which algorithms outperform others in the task.
+Nevertheless, measurements from this study will teach us about the asymptotic behaviour of different algorithms. That should help us grasp a strong intuition of which algorithms outperform others in the task.
 
 # Technical
 
@@ -40,7 +40,7 @@ TODO: Explain problems - values range, spreaing, etc. Take results with limited 
 
 ## 1. Original algorithm
 
-**General:** This is the algorithm presented in Maman 12 Question 1(A). The algorithm arranges a subarray at the beginning of the original array, with all the unique values stored in the subarray. For every element in the array, the algorithm iterates the unique subarray to find out if the element has previously been encountered. Has it not been - it is appended to the unique subarray and a counter is incremented.
+**General:** This is the algorithm presented in Maman 12 Question 1(A). The algorithm arranges a subarray storing the unique values at the beginning of the original one. For every element in the array, the algorithm iterates the unique subarray to determine if the element has previously been encountered. Has it not been - it is appended to the unique subarray, and a counter is incremented.
 
 **Performance:** The algorithm contains two nested loops - one for iterating the entire array, and an inner loop that iterates the unique subarray for every element to look for it. In the worst case scenario, where every element is unique in the array, the algorithm should take $\Theta(n^2)$ comparisons to complete in the worst case.
 
@@ -49,6 +49,7 @@ Discussing the number of placements taking place, we observe that elements are g
 However, when we limit the range of known values, we know the maximum possible size of the unique subarray. Suppose the number of possible elements in the range is $m$. Thus, every inner iteration shall repeat no more than $m$ this, making the overall *worst-case* runtime complexity $\Theta(mn)$. When the range of generated values in the array is constant, the worst case complexity then becomes $\Theta(n)$.
 
 Since the array values are numbers in the range $[1, 100]$, we can observe in the following metrics graph that the complexity is, in practice, linear!
+
 
 ![](Assets/original_algorithm_large_scale_graph.png)
 
