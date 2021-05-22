@@ -26,6 +26,10 @@ TODO: Write the operating system version, computer specs, compiler version.
 
 TODO: Add csv files to the assets folder
 
+TODO: Solve TODOs within code
+
+TODO: Explain problems - values range, spreaing, etc. Take results with limited accountability.
+
 ## Algorithms
 
 ### 1. Original algorithm
@@ -112,7 +116,39 @@ We observe more placements than comparisons generally because of the frequent sw
 
 ### 5. Counting sort C array
 
-**General:** 
+**General:** Uses a counting-sort like table, but instead of holding counts, only holds booleans, with the meaning of "have we seen this value before?". On every iteration, we check if the element is already in the presence table, and if it's not, we add it and increment the unique count.
+
+A disadvantage of this algorithm is that the range of values in the array must be known beforehand, and that its memory complexity varies greatly with an increase of the possible value range.
+
+**Performance:** We iterate the array $n$ times. For each time, we access the table once and make one comparison, and if the value is not in the table, one placement takes place. Of course, the maximum amount of placements is the size of the values range in the array. Thus, the algorithm makes $\Theta(n)$ comparisons and $\Theta(m)$ placements ($m$ being the number of different values that may appear in the array).
+
+Note: We do not count placements into the `unique_count` variable. The maximum amount of placements into this variable is $m$, and since we alreay count $\Theta(m)$ placements, another $m$ placements do not affect the overall asymptotic behaviour.
+
+The following graph visualizes the growth in comparisons and placements:
+
+![](Assets/counting_sort_array_graph.png)
+
+<center>(5.1) - Counting sort array metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+
+The above graph depicts a running of the algorithm with array sizes $10-10000$ and value range $[1...1000]$. When the array size is small, since $m>n$, we see that the number of placements grows with $n$, but the growth rate becomes smaller as the array size increases and $m$ stays constant.
+
+However, when $m$ is constant, we have promised that the number of placements is $\Theta(m)$, and thus should be $\Theta(1)$! Then, why is the graph linearly increasing and not constant? The answer lies in the fact that for all algorithms, we include the first initialization of the array in the measurements. That initialization takes $n$ placements. Let's re-run this particular algorithm without measuring the initialization:
+
+![](Assets/counting_sort_array_no_initialization_graph.png)
+
+<center>(5.2) - Counting sort array metrics graph, without measuring initialization<br/>Blue - comparisons, orange - placements</center><br/>
+
+As expected.
+
+### 6. Hash table
+
+**General:** We use a hash table with chaining to store which values were already counted as unique. On every iteration on the array, we search the value in the heap, and if it is not found, we add it to the heap and increment the unique elements counter.
+
+The implementation of a hashtable is actually `std::set`, since the MSVC STL implementation (which is the STL we compile against) documents that `std::set` is internally implemented using a hashtable. We then use a specially designed hash type (replacing `std::hash<T>`), `logging_hash`, to measure the number of calls to the hash function. 
+
+**Performance**: Here, we count the number of times the hash function is called, since, depending on the hash function, it is not unreasonable to believe hash function calls may be a bottleneck in practice.
+
+
 
 ## Raw outputs:
 
