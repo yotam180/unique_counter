@@ -142,13 +142,23 @@ As expected.
 
 ### 6. Hash table
 
-**General:** We use a hash table with chaining to store which values were already counted as unique. On every iteration on the array, we search the value in the heap, and if it is not found, we add it to the heap and increment the unique elements counter.
+**General:** We use a hash table to store which values were already counted as unique. On every iteration on the array, we search the value in the heap, and if it is not found, we add it to the heap and increment the unique elements counter.
 
-The implementation of a hashtable is actually `std::set`, since the MSVC STL implementation (which is the STL we compile against) documents that `std::set` is internally implemented using a hashtable. We then use a specially designed hash type (replacing `std::hash<T>`), `logging_hash`, to measure the number of calls to the hash function. 
+The implementation of a hashtable is actually `std::unordered_set`, since the MSVC STL implementation (which is the STL we compile against) documents that `std::unordered_set` is internally implemented using a hashtable. We then use a specially designed hash type (replacing `std::hash<T>`), `logging_hash`, to measure the number of calls to the hash function. 
 
 **Performance**: Here, we count the number of times the hash function is called, since, depending on the hash function, it is not unreasonable to believe hash function calls may be a bottleneck in practice.
 
+`std::unordered_set` (and hash tables in general) offer a constant time search and insertion. Then, the number of comparisons, placements and fixed calculations should be upper bounded by $O(n)$.
 
+The following graph visualizes the performance metrics for hash table unique counter:
+
+![](Assets/hash_table_graph.png)
+
+<center>(6.1) - Hash table metrics graph<br/>Blue - comparisons, orange - placements, grey - hash calculations</center><br/>
+
+### 7. Binary Search Tree
+
+**General:** 
 
 ## Raw outputs:
 
