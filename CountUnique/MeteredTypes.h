@@ -3,7 +3,6 @@
 #include "MetricsCounter.h"
 
 #include <functional>
-#include <iostream> // TODO: Remove
 
 /// <summary>
 /// Metered<T> is a wrapper around T, which counts comparisons and placements of T objects.
@@ -80,7 +79,7 @@ public:
 	T operator--(int) noexcept
 	{
 		PLACE
-		T temp = value;
+		T temp = inner_value;
 		inner_value--;
 		return temp;
 	}
@@ -99,11 +98,6 @@ public:
 		return static_cast<T>(inner_value);
 	}
 	
-	// TODO: Get rid of this
-	T value() noexcept
-	{
-		return inner_value;
-	}
 
 private:
 	T inner_value;
