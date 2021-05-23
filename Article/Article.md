@@ -48,8 +48,6 @@ Fixed calculations are just a fancy name for hash calculations, and are implemen
 + Processor: Intel64 Family 6 Model 140 Stepping 1 GenuineIntel ~2803 Mhz
 + Physical memory: 16,063 MB
 
-TODO: Explain problems - values range, spreaing, etc. Take results with limited accountability.
-
 # Algorithms
 
 ## 1. Original algorithm
@@ -226,9 +224,15 @@ The following graphs depict two runs of the red-black tree algorithm, one with a
 
 <center>(8.1) - Red-Black metrics graph, with value range $[1...1000000]<br/>Blue - comparisons, orange - placements</center><br/>
 
+# Conclusions
+
+We have observed that some algorithms behave better than others in terms of asymptotic behaviour. We learned that some algorithms take advantage of the limited range of elements $[1...100]$.
+
+However, we need to take the results from this little research with limited accountability. There are many metrics not measured, such as runtime, the number of dynamic allocations, the number of CPU instructions, the memory requirements... Also, the *very* limited range of elements in the array implied a restriction on the runtimes, and bound them to lower asymptotic limits. An extended version of this research should have included different ranges, different array types (truly random, sorted, k-sorted...), and different random distributions (linear, gaussian). All those factors may have an influence on total performance, and thus we cannot come up with real conclusions without examining those, too.
+
 # Raw outputs:
 
-Attached is a screenshot of a program execution and the raw output of different array sizes $N\in{100,1000,10000,100000,1000000}$:
+Attached is a screenshot of a program execution and the raw output of different array sizes $N\in\{100,1000,10000,100000,1000000\}$:
 
 ![](Assets/output_example.png)
 
