@@ -42,7 +42,7 @@ public:
 	}
 
 	Metered(const This& other) : inner_value(other.inner_value) { PLACE }
-	Metered(This&& other) : inner_value(other.inner_value) { PLACE }
+	Metered(This&& other) noexcept : inner_value(other.inner_value) { PLACE }
 
 public:
 	// The following functions just wrap the native comparison check operators, and log the comparison
