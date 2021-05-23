@@ -228,6 +228,10 @@ The following graphs depict two runs of the red-black tree algorithm, one with a
 
 # Raw outputs:
 
+Attached is a screenshot of a program execution and the raw output of different array sizes $N\in{100,1000,10000,100000,1000000}$:
+
+![](Assets/output_example.png)
+
 ```
 N=100
 Running with 1 Original algorithm
