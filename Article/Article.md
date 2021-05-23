@@ -24,15 +24,29 @@ Of course, the metric values themselves tell us nothing meaningful about compari
 
 Nevertheless, measurements from this study will teach us about the asymptotic behaviour of different algorithms. That should help us grasp a strong intuition of which algorithms outperform others in the task.
 
-# Technical
+# Technical notes
 
-TODO: Explain the method we use to measure the number of comparisons, placements, etc...
+## Measurements 
 
-TODO: Write the operating system version, computer specs, compiler version.
+The method employed to keep track of comparisons and placements was a crafted `Metered<T>` type. Thanks to C++'s rich type system which allow fine-grained control over all operators (assignments, constructions, copies, comparisons, and more), the metered type overloads all operators and counts all opeartions on the object.
 
-TODO: Add csv files to the assets folder
+The three counters (comparisons, placements and fixed calculations) are accumulated in `MetricsCounter`, a static class whose only purpose is to store the live results.
 
-TODO: Solve TODOs within code
+Fixed calculations are just a fancy name for hash calculations, and are implemented using the `logging_hash` type. More information about them can be found in the hashstable algorithm explanation.
+
+## System data
+
+**Compilation details:**
+
++ Compiler: Visual Studio C++ compiler (cl.exe)
++ Plaatform toolset: v142
++ Compiler flags: `/permissive- /ifcOutput "x64\Release\" /GS /GL /W4 /Gy /Zc:wchar_t /Zi /Gm- /O2 /sdl /Fd"x64\Release\vc142.pdb" /Zc:inline /fp:precise /D "NDEBUG" /D "_CONSOLE" /D "_UNICODE" /D "UNICODE" /errorReport:prompt /WX /Zc:forScope /Gd /Oi /MD /std:c++latest /FC /Fa"x64\Release\" /EHsc /nologo /Fo"x64\Release\" /Fp"x64\Release\CountUnique.pch" /diagnostics:column`
+
+**Execution details:**
+
++ Operating system: Windows 10.0.19042
++ Processor: Intel64 Family 6 Model 140 Stepping 1 GenuineIntel ~2803 Mhz
++ Physical memory: 16,063 MB
 
 TODO: Explain problems - values range, spreaing, etc. Take results with limited accountability.
 
@@ -40,52 +54,51 @@ TODO: Explain problems - values range, spreaing, etc. Take results with limited 
 
 ## 1. Original algorithm
 
-**General:** This is the algorithm presented in Maman 12 Question 1(A). The algorithm arranges a subarray storing the unique values at the beginning of the original one. For every element in the array, the algorithm iterates the unique subarray to determine if the element has previously been encountered. Has it not been - it is appended to the unique subarray, and a counter is incremented.
+**General:** This is the algorithm presented in Maman 12 Question 1(A). The algorithm arranges a subarray storing the unique values at the beginning of the original one. The algorithm iterates the unique subarray for every element in the array. It determines if the element has previously been encountered. Has it not been - it is appended to the unique subarray, and a counter is incremented.
 
-**Performance:** The algorithm contains two nested loops - one for iterating the entire array, and an inner loop that iterates the unique subarray for every element to look for it. In the worst case scenario, where every element is unique in the array, the algorithm should take $\Theta(n^2)$ comparisons to complete in the worst case.
+**Performance:** The algorithm contains two nested loops - one for iterating the entire array and an inner loop that iterates the unique subarray for every element to look for it. In the worst-case, where every element is unique, the algorithm should perform $\Theta(n^2)$ comparisons to complete.
 
-Discussing the number of placements taking place, we observe that elements are getting copied when a new element is found. The line that performs element copies within the array is `*unique_end = *current;` in the C++ code, and it happens in the outer loop, outside of the nested `range_contains` function. Thus, the placement happens at most $n$ times, and the placements number is then $O(n)$, or in the worst case, $\Theta(n)$.
+Considering the number of placements taking place, we observe that elements are copied when a new element is found. The line that performs element copies into the unique subarray is `*unique_end = *current;`. It happens in the outer loop, outside of the nested `range_contains` function. Therefore, the placement occurs at most $n$ times, and the placement number is then $O(n)$.
 
-However, when we limit the range of known values, we know the maximum possible size of the unique subarray. Suppose the number of possible elements in the range is $m$. Thus, every inner iteration shall repeat no more than $m$ this, making the overall *worst-case* runtime complexity $\Theta(mn)$. When the range of generated values in the array is constant, the worst case complexity then becomes $\Theta(n)$.
+However, when we limit the range of known values, we know the maximum possible size of the unique subarray. Suppose the number of possible elements in the range is $m$. Thus, every inner iteration shall repeat no more than $m$ times, making the overall *worst-case* runtime complexity $\Theta(mn)$. When the range of generated values in the array is constant, the worst-case complexity becomes $\Theta(n)$.
 
 Since the array values are numbers in the range $[1, 100]$, we can observe in the following metrics graph that the complexity is, in practice, linear!
 
-
 ![](Assets/original_algorithm_large_scale_graph.png)
 
-<center>(1.1) - Original algorithms metrics graph<br/>Orange - comparisons, grey - placements</center><br/>
+<center>(1.1) - Original algorithms metrics graph: Orange - comparisons, grey - placements</center><br/>
 
-When we generate the numbers in the range $[1, 10000]$ and take array sizes of $N=[1,10000]$, we can see metrics that represent the average case where $m=\Theta(n)$. In that case, $\Theta(mn)$ is catually $\Theta(n^2)$. The following graph represents the collected data with the new ranges:
+If we generate the numbers in the range $[1, 10000]$ of sizes $N=[1,10000]$, we can see metrics that represent the average case where $m=\Theta(n)$. In that case, $\Theta(mn)$ is actually $\Theta(n^2)$. The following graph represents the collected data with the new ranges:
 
 ![](Assets/original_algorithm_small_scale_graph.png)
 
-<center>(1.2) - Original algorithms metrics graph<br/>Orange - comparisons, grey - placements</center><br/>
+<center>(1.2) - Original algorithms metrics graph: Orange - comparisons, grey - placements</center>
 
-An interesting phenomenon we observe in this graph is that it "starts" as we intented, but for larger values, it becomes linear. The reason is that when we reach larger array sizes, the array size $n$ comes close to the range $m$, then recreating the previous case where $m=\Theta(n)$.
+An interesting phenomenon in this graph is that it "starts" as we intended but becomes linear for larger values. The reason is that when we reach larger array sizes, the array size $n$ comes close to the range $m$, and then recreating the previous case where $m=\Theta(n)$.
 
-The following graph really shows the intent. It represents the results of running the expreiments with $N=[1,10000]$ and element range of $[1,1000000]$ (keeping $m>>n$ at all time). Here we can see a typical $\Theta(n^2)$ graph:
+The following graph shows the intent. It represents the results of running the experiments with $N=[1,10000]$ and element range of $[1,1000000]$ (keeping $m>>n$ at all time). Here we can see a typical $\Theta(n^2)$ graph:
 
 ![](Assets/original_algorithm_real_n2.png)
 
-<center>(1.3) - Original algorithms metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(1.3) - Original algorithms metrics graph: Blue - comparisons, orange - placements</center>
 
-Note that when the comparisons count really goes quadratic (rather than linear), the placements count (which is linear) is negligible.
+Note that when the comparisons count goes quadratic (rather than linear), the placements count (which is linear) is negligible.
 
 ## 2. Insertion sort
 
-**General:** Sort the array using insertion sort, then iterate it *once* and find all unique values. Since we know all similar values reside in "groups" (i.e. between similar elements there cannot be another element), when iterating the array, every time an element changes `array[i] != array[i-1]`, we know the new element `array[i]` is a new, unique element (which is not in `array[0...i-1]`). The routine `count_unique_in_ordered_array` counts the unique elements in exactly that manner.
+**General:** Sort the array using insertion sort, then iterate it *once* and find all unique values. As we know all similar values reside in continuous "groups", when iterating the array, every time an element changes `array[i] != array[i-1]`, we know the new element `array[i]` is a new, unique element (which is not in `array[0...i-1]`). The routine `count_unique_in_ordered_array` counts the unique elements in exactly that manner.
 
-**Performance:** Insertion sort is known to take $\Theta(n^2)$ steps in the worst-case (and the average case, too), and `count_unique_in_ordered_array` will run in $\Theta(n)$.
+**Performance:** Insertion sort is known to take $\Theta(n^2)$ steps in its worst and average cases, and `count_unique_in_ordered_array` always runs in $\Theta(n)$.
 
-Examine the `insertion_sort` subroutine more deeply, we see an outer loop that iterates exactly $n$ times. Inside the loop, a call to `first_larger`, which performs binary search on `array[0...i-1]` to look for the first value larger than `array[i]` (that is the insertion point). The binary search takes $\Theta(\log(i))$ comparisons. After the insertion point is found, the array `array[insertion_point...i]` is rotated right once (moving `array[i]`) into `array[insertion_point]`, and shifting every other element right one position. This procedure takes $\Theta(i-insertion\_point)$ placements. In the worst case, where the array is reversely-ordered, $insertion\_point$ will always be $0$ and the rotation will take $\Theta(i)$ placements.
+Examine the `insertion_sort` subroutine more deeply; we see an outer loop that iterates exactly $n$ times. Inside the loop, we call `first_larger`, which performs a binary search on `array[0...i-1]` to look for the first value larger than `array[i]` (that is the insertion point). The binary search takes $\Theta(\log(i))$ comparisons. After the insertion point is found, the array `array[insertion_point...i]` is rotated right one place (moving `array[i]`) into `array[insertion_point]`, and shifting every other element one place to the right. This procedure takes $\Theta(i-insertion\_point)$ placements. In the worst case, where the array is reversely-ordered, $insertion\_point$ will always be $0$, and the rotation will take $\Theta(i)$ placements.
 
-In conclusion, as the outer loop executea $n$ times, the placements count in the worst case is then $\sum_{i=1}^ni=\Theta(n^2)$. The comparison count is $\sum_{i=1}^n\log(i)=\log(n!)=\Theta(n\log(n))$.
+In conclusion, as the outer loop executes $n$ times, the placements count in the worst case is $\sum_{i=1}^ni=\Theta(n^2)$. The comparison count is $\sum_{i=1}^n\log(i)=\log(n!)=\Theta(n\log(n))$.
 
 The following graph shows the performance metrics of the insertion sort algorithm on array sizes from $10$ to $10000$.
 
 ![](Assets/insertion_sort_graph.png)
 
-<center>(2.1) - Insertion sort metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(2.1) - Insertion sort metrics graph: Blue - comparisons, orange - placements</center>
 
 ## 3. Optimal comparison-based sort
 
