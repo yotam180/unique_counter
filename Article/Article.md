@@ -18,9 +18,9 @@ We utilise three different metric values to measure the performance of each algo
 2. Number of placements/copies
 3. Number of "fixed-size" calculations
 
-We use the third metric if hashtables are involved since we wish to consider the cost of hashing elements (which may be significant to performance no less than comparisons and placements).
+We use the third metric if hashtables are involved since we wish to consider the cost of hashing elements. That cost may be significant to performance no less than comparisons and placements.
 
-Of course, the metric values themselves tell us nothing meaningful about comparing different algorithms for the same input size since we do not know the relation between the cost of comparison, placement and hash calculation. Moreover, there are valuable metrics not included in this study, such as runtime, number of dynamic allocations, or overall memory requirements.
+Of course, the metric values themselves tell us nothing meaningful about comparing different algorithms for the same input size. That is because we do not know the relation between the cost of comparison, placement and hash calculation. Moreover, there are valuable metrics not included in this study, such as runtime, number of dynamic allocations, or overall memory requirements.
 
 Nevertheless, measurements from this study will teach us about the asymptotic behaviour of different algorithms. That should help us grasp a strong intuition of which algorithms outperform others in the task.
 
@@ -142,7 +142,7 @@ A disadvantage of this algorithm is that the range of values in the array must b
 
 Note: We do not count placements into the `unique_count` variable. The maximum amount of placements into this variable is $m$. Since we already count $\Theta(m)$ placements, extra $m$ placements do not affect the overall asymptotic behaviour.
 
-The following graph visualizes the growth in comparisons and placements:
+The following graph visualises the growth in comparisons and placements:
 
 ![](Assets/counting_sort_array_graph.png)
 
@@ -150,13 +150,13 @@ The following graph visualizes the growth in comparisons and placements:
 
 The above graph depicts the algorithm running with array sizes $10-10000$ and value range $[1...1000]$. When the array size is small, since $m>n$, we see that the number of placements grows with $n$, but the growth rate becomes smaller as the array size increases and $m$ stays constant.
 
-However, when $m$ is constant, we assured that the number of placements is $\Theta(m)$, and should be $\Theta(1)$! Then, why is the graph linearly increasing and not constant? The answer lies in counting the first initialization of the array for all algorithms. That initialization takes $n$ placements and lower-binds the graph to $\Omega(n)$. Let us re-run this particular algorithm without measuring the initialization:
+However, when $m$ is constant, we assured that the number of placements is $\Theta(m)$, and should be $\Theta(1)$! Then, why is the graph linearly increasing and not constant? The answer lies in counting the first initialisation of the array for all algorithms. That initialisation takes $n$ placements and lower-binds the graph to $\Omega(n)$. Let us re-run this particular algorithm without measuring the initialisation:
 
 ![](Assets/counting_sort_array_no_initialization_graph.png)
 
 <center>(5.2) - Counting sort array metrics graph, without measuring initialization: Blue - comparisons, orange - placements</center>
 
-As expected.
+Exactly as expected.
 
 ## 6. Hash table
 
@@ -168,7 +168,7 @@ We implement the hashtable by using `std::unordered_set`, since the MSVC STL imp
 
 `std::unordered_set` (and hash tables in general) offer a constant time search and insertion. Then, the number of comparisons, placements, and fixed calculations should be bounded from above by $O(n)$.
 
-The following graph visualizes the performance metrics for the hash table unique counter:
+The following graph visualises the performance metrics for the hash table unique counter:
 
 ![](Assets/hash_table_graph.png)
 
@@ -188,7 +188,7 @@ The following graph depicts the metrics for the binary search tree:
 
 <center>(7.1) - BST metrics graph: Blue - comparisons, orange - placements</center>
 
-The comparisons count does not precisely reflect a "linear" growth. However, the yellow dashed line is a linear trendline emphasizing that the comparisons grow linearly.
+The comparisons count does not precisely reflect a "linear" growth. However, the yellow dashed line is a linear trendline emphasising that the comparisons grow linearly.
 
 Similarly to algorithm 1, the limited constant range of possible elements in the array limits the BST size to a constant value, reducing the overall comparisons and placements from $\Theta(n\log(n))$ to $\Theta(n)$. With a broader range to work with, we should be able to observe a graph depicting $\Theta(n\log(n))$
 
@@ -314,7 +314,7 @@ Running with 8 Red-Black tree
         Result: 101, Comparisons: 792171, Placements: 100101, Calculations: 0
 ```
 
-> **Note:** Insertion sort (algorithm #2) could not run with `N=1000000` in a reasonable amount of time. I had to stop the experiment, and thus the next run does not contain metrics for insertion sort.
+> **Note:** Insertion sort (algorithm #2) could not run with `N=1000000` in a reasonable amount of time. The experiment had to be stopped, and subsequently, the next run does not contain metrics for insertion sort.
 
 ```
 N=1000000
