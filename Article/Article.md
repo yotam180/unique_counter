@@ -28,11 +28,11 @@ Nevertheless, measurements from this study will teach us about the asymptotic be
 
 ## Measurements 
 
-The method employed to keep track of comparisons and placements was a crafted `Metered<T>` type. Thanks to C++'s rich type system which allow fine-grained control over all operators (assignments, constructions, copies, comparisons, and more), the metered type overloads all operators and counts all opeartions on the object.
+The method employed to keep track of comparisons and placements was a crafted `Metered<T>` type. Thanks to C++'s rich type system, which provides fine-grained control over operators, the metered type overloads comparisons, placements, constructions, and copies. It counts all operations on the object.
 
-The three counters (comparisons, placements and fixed calculations) are accumulated in `MetricsCounter`, a static class whose only purpose is to store the live results.
+The three counters (comparisons, placements, and fixed calculations) are accumulated in `MetricsCounter`, a static class whose only purpose is to store the live results.
 
-Fixed calculations are just a fancy name for hash calculations, and are implemented using the `logging_hash` type. More information about them can be found in the hashstable algorithm explanation.
+Fixed calculations are just a fancy name for hash calculations and are implemented using the `logging_hash` type. More information about them can be found in the hashtable algorithm explanation.
 
 ## System data
 
@@ -116,95 +116,93 @@ The following graph shows the comparisons and placements growth with array sizes
 
 ![](Assets/optimal_sort_graph.png)
 
-<center>(3.1) - Optimal sort metrics graph<br/>Blue - comparisons, orange - placements, grey - nlgn, yellow - linear</center><br/>
+<center>(3.1) - Optimal sort metrics graph: Blue - comparisons, orange - placements, grey - nlgn, yellow - linear</center>
 
 ## 4. Heapsort
 
-**General:** in addition to using `std::sort` (for it's known to be blazingly fast), I wanted to see the results of  a known optimal sort. The library functions added in C++20, `std::make_heap` and `std::pop_heap`, made it very simple to implement a heap sort.
+**General:** in addition to using `std::sort` (for it is known to be blazingly fast), I wanted to see the results of a known optimal sort. The library functions added in C++20, `std::make_heap` and `std::pop_heap`, rendered it very simple to implement heap sort.
 
 After sorting the array, we use `count_unique_in_sorted_array` to count the unique values in a linear time.
 
-**Performance:** Heapsort is known to take $\Theta(n\log(n))$ in its worst case. By calling $MAX\_HEAPIFY$ on the heap, we perform up to $\log(n)$ comparisons and $\log(n)$ placements (swapping elemants). Having $MAX\_HEAPIFY$ run $n$ times during the algorithm with decreasing heap size, the total number of comparisons/placements (after crafting the heap for the first time) should be $\sum_{i=1}^n\log(i)=\Theta(n\log(n))$.
+**Performance:** Heapsort is known to take $\Theta(n\log(n))$ in its worst-case. By calling $MAX\_HEAPIFY$ on the heap, we perform up to $\log(n)$ comparisons and $\log(n)$ placements (swapping elements). Having $MAX\_HEAPIFY$ run $n$ times during the algorithm with decreasing heap size, the total number of comparisons/placements (after forming the heap for the first time) should be $\sum_{i=1}^n\log(i)=\Theta(n\log(n))$.
 
 ![](Assets/heap_sort_graph.png)
 
-<center>(4.1) - Heap sort metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(4.1) - Heap sort metrics graph: Blue - comparisons, orange - placements</center>
 
-We observe more placements than comparisons generally because of the frequent swapping, which counts as 3 placements.
+We observe more placements than comparisons generally because of the frequent swapping, which counts as three placements.
 
 ## 5. Counting sort C array
 
-**General:** Uses a counting-sort like table, but instead of holding counts, only holds booleans, with the meaning of "have we seen this value before?". On every iteration, we check if the element is already in the presence table, and if it's not, we add it and increment the unique count.
+**General:** Uses a counting-sort-like table, except instead of holding counts, it holds booleans, with the meaning of "have we encountered this value before?". On every iteration, we check if the element is already in the presence table. If it is not, we add it and increment the unique count.
 
-A disadvantage of this algorithm is that the range of values in the array must be known beforehand, and that its memory complexity varies greatly with an increase of the possible value range.
+A disadvantage of this algorithm is that the range of values in the array must be known beforehand. Its memory complexity varies significantly with an increase of the possible value range.
 
-**Performance:** We iterate the array $n$ times. For each time, we access the table once and make one comparison, and if the value is not in the table, one placement takes place. Of course, the maximum amount of placements is the size of the values range in the array. Thus, the algorithm makes $\Theta(n)$ comparisons and $\Theta(m)$ placements ($m$ being the number of different values that may appear in the array).
+**Performance:** We iterate the array $n$ times. Each time, we access the table once and make one comparison, and if the value is not in the table, one placement occurs. Of course, the maximum number of placements is the size of the value range in the array. Thus, the algorithm makes $\Theta(n)$ comparisons and $\Theta(m)$ placements in the worst-case ($m$ being the number of different values that may appear in the array).
 
-Note: We do not count placements into the `unique_count` variable. The maximum amount of placements into this variable is $m$, and since we alreay count $\Theta(m)$ placements, another $m$ placements do not affect the overall asymptotic behaviour.
+Note: We do not count placements into the `unique_count` variable. The maximum amount of placements into this variable is $m$. Since we already count $\Theta(m)$ placements, extra $m$ placements do not affect the overall asymptotic behaviour.
 
 The following graph visualizes the growth in comparisons and placements:
 
 ![](Assets/counting_sort_array_graph.png)
 
-<center>(5.1) - Counting sort array metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(5.1) - Counting sort array metrics graph: Blue - comparisons, orange - placements</center>
 
-The above graph depicts a running of the algorithm with array sizes $10-10000$ and value range $[1...1000]$. When the array size is small, since $m>n$, we see that the number of placements grows with $n$, but the growth rate becomes smaller as the array size increases and $m$ stays constant.
+The above graph depicts the algorithm running with array sizes $10-10000$ and value range $[1...1000]$. When the array size is small, since $m>n$, we see that the number of placements grows with $n$, but the growth rate becomes smaller as the array size increases and $m$ stays constant.
 
-However, when $m$ is constant, we have promised that the number of placements is $\Theta(m)$, and thus should be $\Theta(1)$! Then, why is the graph linearly increasing and not constant? The answer lies in the fact that for all algorithms, we include the first initialization of the array in the measurements. That initialization takes $n$ placements. Let's re-run this particular algorithm without measuring the initialization:
+However, when $m$ is constant, we assured that the number of placements is $\Theta(m)$, and should be $\Theta(1)$! Then, why is the graph linearly increasing and not constant? The answer lies in counting the first initialization of the array for all algorithms. That initialization takes $n$ placements and lower-binds the graph to $\Omega(n)$. Let us re-run this particular algorithm without measuring the initialization:
 
 ![](Assets/counting_sort_array_no_initialization_graph.png)
 
-<center>(5.2) - Counting sort array metrics graph, without measuring initialization<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(5.2) - Counting sort array metrics graph, without measuring initialization: Blue - comparisons, orange - placements</center>
 
 As expected.
 
 ## 6. Hash table
 
-**General:** We use a hash table to store which values were already counted as unique. On every iteration on the array, we search the value in the heap, and if it is not found, we add it to the heap and increment the unique elements counter.
+**General:** We use a hash table to store the values which were already counted as unique. On every iteration, we search the value in the table. If it is not found, we add it to the table and increment the unique elements counter.
 
-The implementation of a hashtable is actually `std::unordered_set`, since the MSVC STL implementation (which is the STL we compile against) documents that `std::unordered_set` is internally implemented using a hashtable. We then use a specially designed hash type (replacing `std::hash<T>`), `logging_hash`, to measure the number of calls to the hash function. 
+We implement the hashtable by using `std::unordered_set`, since the MSVC STL implementation documents that `std::unordered_set` is internally implemented using a hashtable. We then use a specially designed hash type (replacing `std::hash<T>`), `logging_hash`, to measure the number of calls to the hash function. 
 
-**Performance**: Here, we count the number of times the hash function is called, since, depending on the hash function, it is not unreasonable to believe hash function calls may be a bottleneck in practice.
+**Performance**: Here, we count the number of times the hash function is called since, depending on the hash function, it is reasonable to believe hash function calls may be a bottleneck in practice (making it a valuable metric).
 
-`std::unordered_set` (and hash tables in general) offer a constant time search and insertion. Then, the number of comparisons, placements and fixed calculations should be upper bounded by $O(n)$.
+`std::unordered_set` (and hash tables in general) offer a constant time search and insertion. Then, the number of comparisons, placements, and fixed calculations should be bounded from above by $O(n)$.
 
-The following graph visualizes the performance metrics for hash table unique counter:
+The following graph visualizes the performance metrics for the hash table unique counter:
 
 ![](Assets/hash_table_graph.png)
 
-<center>(6.1) - Hash table metrics graph<br/>Blue - comparisons, orange - placements, grey - hash calculations</center><br/>
+<center>(6.1) - Hash table metrics graph: Blue - comparisons, orange - placements, grey - hash calculations</center>
 
 ## 7. Binary Search Tree
 
-TODO: Go through this and make sure everything is correct!!! (placements/comparisons wise, validate all numbers and equations)
+**General:** Similarly to the hash table, the algorithm starts with an empty BST and iterates the array once. Every encountered element is searched in the tree. If it is not found, it is added to the tree, and a counter is incremented.
 
-**General:** Similarly to hash table, the algorithm starts with an empty BST, and iterates the array. On every element the algorithm encounters, it searches for it in the tree, and if it is not found, it is added to the tree and a counter is incremented.
+**Performance:** In the worst case, when the array is ordered, new leaves will always be added to the right. Then, a "tail" shaped tree will be formed (where $h=n$), with insertions and searches taking $\Theta(n)$ comparisons ($n$ being the size of the tree). Then, performing $n$ searches and $O(n)$ insertions, the algorithm overall runtime complexity should be $O(n^2)$.
 
-**Performance:** In the worst case, when the array is ordered, new leaves will always be added to the right, forming a "tail" shaped tree (where $h=n$), with insertions and searches taking $\Theta(n)$ comparisons ($n$ being the size of the tree). Then, performing $n$ searches and $O(n)$ insertions, the algorithm overall runtime complexity should be $O(n^2)$.
+However, a randomly generated input array should result in a randomly constructed BST, whose performance is predicted to be around the average case (and not the worst case). In the average case, we expect the tree's height to be logarithmic to the tree size - $h=\Theta(\log(n))$. Then, the overall number of comparisons is $\Theta(n\log(n))$. The number of placements is $\Theta(m)$ ($m$ being the maximal size of the tree)
 
-However, a randomly generated input array should result in a randomly constructed BST, whose performance is predicted to be around the average case (and not the worst case). In the average case, we expect the height of the tree to be logarithmic to the tree size - $h=\Theta(\log(n))$. Then, the overall number of comparisons is $\Theta(n\log(n))$. The number of placements is $\Theta(m)$ ($m$ being the maximal size of the tree)
-
-The following graph depicts the metrics for binary search tree:
+The following graph depicts the metrics for the binary search tree:
 
 ![](Assets/bst_graph.png)
 
-<center>(7.1) - BST metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(7.1) - BST metrics graph: Blue - comparisons, orange - placements</center>
 
-The comparisons count does not exactly reflect a "linear" growth, but the yellow dashed line is a linear trendline emphasizing that the comparisons grow linearly.
+The comparisons count does not precisely reflect a "linear" growth. However, the yellow dashed line is a linear trendline emphasizing that the comparisons grow linearly.
 
-Similarly to algorithm 1, the limited constant range of possible elements in the array limits the BST size to a constant value, reducing the overall comparisons and placements from $\Theta(n\log(n))$ to $\Theta(n)$. With a larger range to work with, we should be able to observe a graph depicting $\Theta(n\log(n))$
+Similarly to algorithm 1, the limited constant range of possible elements in the array limits the BST size to a constant value, reducing the overall comparisons and placements from $\Theta(n\log(n))$ to $\Theta(n)$. With a broader range to work with, we should be able to observe a graph depicting $\Theta(n\log(n))$
 
-The next graph depicts a crafted worst-case scenario. The given arrays in this case are always sorted, so that the binary tree is always in its worst shape. That corresponds to $\Theta(n^2)$ comparisons and $\Theta(n\log(n))$ placements.
-
-![](Assets/bst_worst_case_graph.png)
-
-<center>(7.2) - BST worst-case metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
-
-The next graph corresponds to the average case scenario, run with array sizes $10-10000$ and value range of $[1...1000000]$ (thus, not limiting the tree size to a constant factor). This corresponds to the frequent case where $m=\omega(n)$ (an order of magnitude more values than actual elements).
+The next graph depicts a crafted worst-case scenario. In this case, the generated arrays are always sorted, and the binary tree is always in its worst shape. That corresponds to $\Theta(n^2)$ comparisons and $\Theta(n\log(n))$ placements.
 
 ![](Assets/bst_worst_case_graph.png)
 
-<center>(7.3) - BST average-case metrics graph with $m=\omega(n)$<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(7.2) - BST worst-case metrics graph: Blue - comparisons, orange - placements</center>
+
+The following graph corresponds to the average-case scenario, run with array sizes $10-10000$ and a value range of $[1...1000000]$ (thus, not limiting the tree size to a constant factor). This graph corresponds to the frequent case where $m=\omega(n)$ (an order of magnitude more values than actual elements).
+
+![](Assets/bst_worst_case_graph.png)
+
+<center>(7.3) - BST average-case metrics graph with $m=\omega(n)$: Blue - comparisons, orange - placements</center>
 
 ## 8. Red-Black Tree
 
@@ -212,23 +210,23 @@ The next graph corresponds to the average case scenario, run with array sizes $1
 
 **Performance**: The height of the tree is guaranteed to be $\Theta(\log(n))$. When the values range is constant, like the previous case (BST), the overall number of comparisons is $\Theta(n)$. When the range is $m=\Omega(n)$, the overall number of comparisons is $\Theta(n\log(n))$.
 
-The major difference between the two algorithms is that the worst-case graph presented in the previous section does not exist here - the red-black tree height cannot be $\Theta(n)$, and the overall number of comparisons in the algorithm will never be $\Theta(n^2)$.
+The significant difference between the two algorithms is that the worst-case graph presented in the previous section does not exist here. The red-black tree height cannot be $\Theta(n)$, never allowing the overall number of comparisons in the algorithm to grow to $\Theta(n^2)$.
 
-The following graphs depict two runs of the red-black tree algorithm, one with a small, limited range of possible values, and one with a very large range of values.
+The following graphs depict two runs of the red-black tree algorithm, one with a small, limited range of possible values and one with an extensive range of values.
 
 ![](Assets/red_black_graph.png)
 
-<center>(8.1) - Red-Black metrics graph<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(8.1) - Red-Black metrics graph: Blue - comparisons, orange - placements</center>
 
 ![](Assets/red_black_large_range_graph.png)
 
-<center>(8.1) - Red-Black metrics graph, with value range $[1...1000000]<br/>Blue - comparisons, orange - placements</center><br/>
+<center>(8.1) - Red-Black metrics graph, with value range $[1...1000000]: Blue - comparisons, orange - placements</center>
 
 # Conclusions
 
-We have observed that some algorithms behave better than others in terms of asymptotic behaviour. We learned that some algorithms take advantage of the limited range of elements $[1...100]$.
+We have witnessed that some algorithms behave better than others in terms of asymptotic behaviour. We learned that some algorithms take advantage of the restricted range of elements $[1...100]$.
 
-However, we need to take the results from this little research with limited accountability. There are many metrics not measured, such as runtime, the number of dynamic allocations, the number of CPU instructions, the memory requirements... Also, the *very* limited range of elements in the array implied a restriction on the runtimes, and bound them to lower asymptotic limits. An extended version of this research should have included different ranges, different array types (truly random, sorted, k-sorted...), and different random distributions (linear, gaussian). All those factors may have an influence on total performance, and thus we cannot come up with real conclusions without examining those, too.
+However, we need to take the results from this succinct research with limited accountability. Many metrics are not measured here, such as runtime, the number of dynamic allocations, the number of CPU instructions, the memory requirements... Also, the array's minimal range implied a restriction on the runtimes and bound them to lower asymptotic growth rates. An extended version of this research should have included different ranges, different array types (truly random, sorted, k-sorted), and different random distributions (linear, Gaussian). All those factors may influence total performance. Thus, we cannot come up with factual conclusions without examining those aspects, too.
 
 # Raw outputs:
 
